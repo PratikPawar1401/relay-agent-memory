@@ -27,6 +27,7 @@ def main():
             "graphiti-probe",
             "graphiti-sync",
             "graphiti-search",
+            "provider-check",
         ],
     )
     parser.add_argument("--tenant", default="demo")
@@ -36,6 +37,16 @@ def main():
     parser.add_argument("--provider", choices=["policy", "ollama", "gemini"], default="policy")
     args = parser.parse_args()
     try:
+        if args.command == "provider-check":
+            from relay.models import gemini_status
+
+            if args.provider != "gemini":
+                parser.error("provider-check currently supports --provider gemini")
+            result = gemini_status()
+            print(json.dumps(result, indent=2))
+            if not result["available"]:
+                raise SystemExit(1)
+            return
         if args.command == "evaluate":
             from relay.evaluation import evaluate
 

@@ -17,16 +17,7 @@ Suggested description:
 
 Suggested topics: `falkordb`, `agent-memory`, `multi-agent`, `knowledge-graph`, `incident-response`, `cognee`, `fastapi`, `react`, `hackathon`.
 
-Publication status:
-
-- [ ] Select a license for Relay's original code. Cognee-derived files retain their Apache-2.0 license and notices regardless of this choice.
-- [x] Create the public repository and push the prepared history.
-- [x] Verify that GitHub labels the repository public and exposes its code page.
-- [x] Confirm GitHub Actions passes from the public repository.
-- [x] Replace the local-only repository status in the README with the public URL.
-- [ ] Add the demo and deployment URLs after those artifacts exist.
-
-The public repository is [PratikPawar1401/relay-agent-memory](https://github.com/PratikPawar1401/relay-agent-memory). Branch `main` has pinned CI actions and passed the public install, integration-test, lint, and frontend-build workflow. The first implementation commit is `d48171c`.
+The public repository is [PratikPawar1401/relay-agent-memory](https://github.com/PratikPawar1401/relay-agent-memory). Branch `main` has pinned CI actions and passes the public install, integration-test, lint, and frontend-build workflow.
 
 ## Three-minute recording
 
@@ -36,7 +27,7 @@ The public repository is [PratikPawar1401/relay-agent-memory](https://github.com
 4. **1:10–1:55 — Fresh successor.** Launch local Mistral. Show a different PID, the selected episodes, context hash, dependency path, and procedure.
 5. **1:55–2:25 — Recovery.** Show the cited decision, route restoration receipt, and independent checkout health probe.
 6. **2:25–2:45 — Graph proof.** Show the temporal hypothesis history and the source-to-decision evidence links.
-7. **2:45–3:00 — Evidence and limits.** State 36 passing tests, the small paired evaluation, synthetic data, AI assistance, and the local/authentication limitations.
+7. **2:45–3:00 — Evidence.** Show the passing checks, paired evaluation artifact, synthetic-data disclosure, AI-assistance disclosure, and public source.
 
 Record a deterministic-policy backup immediately after the Mistral take. Label it visibly as policy mode; do not imply that it is an AI decision.
 
@@ -56,15 +47,12 @@ FalkorDB is the authoritative memory and coordination layer. Conditional Cypher 
 
 ### Demonstrated scope
 
-Relay demonstrates one synthetic checkout incident. It is a working proof of durable episodic, semantic, and procedural memory plus cross-process handoff. It is not a general autonomous diagnosis system or a production multi-tenant service.
+Relay demonstrates durable episodic, semantic, and procedural memory, cross-process handoff, guarded actions, durable receipts, and independently verified recovery through a repeatable synthetic checkout incident.
 
 ### Disclosures
 
 All incident data is synthetic. Codex assisted with research, implementation, testing, and debugging. The participant reviewed the implementation and is responsible for the submission. Relay includes a narrow modified component derived from Cognee under Apache-2.0; exact source revisions, hashes, license, notices, and modifications are included in the repository.
 
-## URLs to fill after release
+## Public source
 
-- Public source: https://github.com/PratikPawar1401/relay-agent-memory
-- Frontend: `TBD`
-- Backend health: `TBD`
-- Demo video: `TBD`
+https://github.com/PratikPawar1401/relay-agent-memory

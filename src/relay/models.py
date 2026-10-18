@@ -13,6 +13,58 @@ class Decision(BaseModel):
     evidence_ids: list[str] = Field(min_length=1, max_length=10)
 
 
+class ProviderError(ValueError):
+    """A safe, user-facing model-provider failure."""
+
+
+def gemini_status() -> dict:
+    key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+    model = os.getenv("RELAY_GEMINI_MODEL")
+    if not key or not model:
+        return {"configured": False, "available": False, "model": model}
+    try:
+        response = httpx.get(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}",
+            headers={"x-goog-api-key": key},
+            timeout=10,
+        )
+        response.raise_for_status()
+    except httpx.HTTPStatusError as error:
+        detail = (
+            "quota unavailable"
+            if error.response.status_code == 429
+            else "credentials or model unavailable"
+        )
+        return {"configured": True, "available": False, "model": model, "detail": detail}
+    except httpx.HTTPError:
+        return {
+            "configured": True,
+            "available": False,
+            "model": model,
+            "detail": "provider unreachable",
+        }
+    return {"configured": True, "available": True, "model": model}
+
+
+def _gemini_decision(data: dict) -> Decision:
+    feedback = data.get("promptFeedback", {})
+    if feedback.get("blockReason"):
+        raise ProviderError(f"Gemini blocked the request: {feedback['blockReason']}")
+    candidates = data.get("candidates") or []
+    if not candidates:
+        raise ProviderError("Gemini returned no decision candidate")
+    candidate = candidates[0]
+    parts = candidate.get("content", {}).get("parts", [])
+    text = "".join(part.get("text", "") for part in parts if isinstance(part, dict)).strip()
+    if not text:
+        finish = candidate.get("finishReason", "unknown")
+        raise ProviderError(f"Gemini returned an empty decision ({finish})")
+    try:
+        return Decision.model_validate_json(text)
+    except ValueError as error:
+        raise ProviderError("Gemini returned a decision outside Relay's contract") from error
+
+
 def decide(context: dict, provider: str) -> tuple[Decision, dict]:
     """One bounded model call, no silent provider fallback or automatic retries."""
     evidence_catalog = [
@@ -76,30 +128,36 @@ def decide(context: dict, provider: str) -> tuple[Decision, dict]:
             decision = Decision.model_validate_json(data["message"]["content"])
             usage = {k: data.get(k) for k in ("prompt_eval_count", "eval_count", "total_duration")}
         elif provider == "gemini":
-            key = os.getenv("GEMINI_API_KEY")
+            key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
             model = os.getenv("RELAY_GEMINI_MODEL")
             if not key or not model:
-                raise ValueError(
-                    "Set GEMINI_API_KEY and RELAY_GEMINI_MODEL for your available model"
+                raise ProviderError(
+                    "Set GEMINI_API_KEY (or GOOGLE_API_KEY) and RELAY_GEMINI_MODEL"
                 )
-            response = client.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-                headers={"x-goog-api-key": key},
-                json={
-                    "systemInstruction": {"parts": [{"text": system}]},
-                    "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                    "generationConfig": {
-                        "temperature": 0,
-                        "maxOutputTokens": 1024,
-                        "responseMimeType": "application/json",
-                        "responseJsonSchema": Decision.model_json_schema(),
+            try:
+                response = client.post(
+                    f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+                    headers={"x-goog-api-key": key},
+                    json={
+                        "systemInstruction": {"parts": [{"text": system}]},
+                        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                        "generationConfig": {
+                            "temperature": 0,
+                            "maxOutputTokens": 1024,
+                            "responseMimeType": "application/json",
+                            "responseJsonSchema": Decision.model_json_schema(),
+                        },
                     },
-                },
-            )
-            response.raise_for_status()
+                )
+                response.raise_for_status()
+            except httpx.HTTPStatusError as error:
+                if error.response.status_code == 429:
+                    raise ProviderError("Gemini quota is currently unavailable") from error
+                raise ProviderError("Gemini rejected the model request") from error
+            except httpx.HTTPError as error:
+                raise ProviderError("Gemini could not be reached") from error
             data = response.json()
-            parts = data["candidates"][0]["content"]["parts"]
-            decision = Decision.model_validate_json("".join(p.get("text", "") for p in parts))
+            decision = _gemini_decision(data)
             usage = data.get("usageMetadata", {})
         else:
             raise ValueError("Unknown model provider")

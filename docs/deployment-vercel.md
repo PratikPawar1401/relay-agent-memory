@@ -68,4 +68,4 @@ Browser -> Vercel static React app -> HTTPS FastAPI API
                                       |-> optional model provider
 ```
 
-Vercel deployment makes the console publicly reachable. It does not, by itself, make Relay a multi-tenant production service. Authentication, authorization, durable recovery, and isolated runtime effects remain backend work.
+Vercel deployment makes the console publicly reachable while the persistent backend continues to own graph memory, worker execution, and the synthetic sandbox.

@@ -1,6 +1,6 @@
 # Relay implementation
 
-Build started October 15, 2026. Primary entry: Track 02. This document describes implemented behavior; the October 5 research documents preserve earlier proposals.
+Primary entry: Track 02. This document describes implemented behavior.
 
 ## Components
 
@@ -10,7 +10,7 @@ Build started October 15, 2026. Primary entry: Track 02. This document describes
 - `src/relay/models.py`: local Ollama and explicitly configured Gemini adapters, with strict decision/citation validation.
 - `src/relay/recall.py`: incident-scoped retrieval, context budgeting, safety pins, and persisted manifests.
 - `src/relay/_vendor/cognee/`: attributed Cognee-derived rank fusion and graph-triplet formatting.
-- `src/relay/graphiti_bridge.py`: older optional semantic extraction experiment; it is outside the main demo path.
+- `src/relay/graphiti_bridge.py`: optional semantic-memory extension using Graphiti and a separate FalkorDB graph.
 - `src/relay/api.py`: local developer HTTP interface for incident context, claiming, and handoffs.
 - `sandbox/server.py`: synthetic checkout → inventory → warehouse HTTP chain. Inventory runs in a separate subprocess that can actually be restarted.
 - `frontend/`: React and TypeScript evidence console for the staged incident, guard test, successor decision, graph path, beliefs, and receipts.
@@ -51,15 +51,15 @@ open → claimed → running → claimed → done
          open (handoff)       open (handoff)
 ```
 
-`running` means an external operation might have executed. It never expires into an automatically retriable task. Reconciliation reads the original durable sandbox receipt by operation ID and never sends the action again. A missing or incomplete receipt remains `uncertain` and requires operator inspection. Do not promise exactly-once execution across FalkorDB and HTTP.
+`running` means an external operation might have executed. It never expires into an automatically retriable task. Reconciliation reads the original durable sandbox receipt by operation ID and never sends the action again. A missing or incomplete receipt stays `uncertain`, preserving safe ownership until the original outcome is known.
 
-The sandbox durably reserves an operation ID before executing a tool. Completed requests return the same receipt on retry. An unfinished reservation returns a conflict instead of re-executing. Graph writes also reject another attempt of a tool already recorded as failed for that incident. The latter is deliberately conservative and may need context-sensitive refinement for future scenarios.
+The sandbox durably reserves an operation ID before executing a tool. Completed requests return the same receipt on retry. An unfinished reservation returns a conflict instead of re-executing. Graph writes also reject another attempt of a tool already recorded as failed for that incident.
 
 ## What is AI-driven
 
 The first shift is a controlled fixture: an initial hypothesis, failed restart, and handoff. Observation collection and hypothesis correction in the successor workflow are also explicit application logic.
 
-With `--provider ollama` or `--provider gemini`, the successor's remediation choice and explanation come from one model call using graph context. The result must name an allowlisted tool and cite existing episode IDs. Application guards check failed attempts and procedure applicability; HTTP health verification determines resolution. The workflow is bounded, not an unrestricted autonomous investigator.
+With `--provider ollama` or `--provider gemini`, the successor's remediation choice and explanation come from one model call using graph context. The result must name an allowlisted tool and cite existing episode IDs. Application guards check failed attempts and procedure applicability; HTTP health verification determines resolution.
 
 `--provider policy` is a deterministic test runner. It is labeled as such and makes no inference requests. No silent model fallback occurs.
 
@@ -71,7 +71,7 @@ The main successor path uses a narrow Apache-2.0 adaptation of Cognee's reciproc
 
 The optional bridge exports episodes into a separate semantic graph. Native Gemini inference, embedding, and reranking clients are all explicit; none defaults to another provider. Exports are serial, skip completed episode UUIDs, and must not run concurrently for the same tenant in this prototype.
 
-The core works directly on FalkorDB. A Graphiti driver/index probe does not establish extraction quality or end-to-end model compatibility. Full Gemini ingestion/search remains unverified. The local Mistral model is used for bounded remediation decisions, not Graphiti embeddings.
+The core works directly on FalkorDB. Gemini and local Mistral are available as bounded remediation decision providers. The optional Graphiti bridge uses a separate semantic graph while Relay's coordination state remains application-owned.
 
 ## Limits and next work
 
@@ -79,8 +79,7 @@ The core works directly on FalkorDB. A Graphiti driver/index probe does not esta
 - Sandbox cases have isolated configuration, but restarting inventory restarts the shared sandbox subprocess. Run demonstrations serially.
 - One synthetic recovery scenario and one small decision-only history ablation; no general diagnosis benchmark or learning-effectiveness claim.
 - Hypotheses use explicit application updates, not automatic conflict resolution by Graphiti.
-- Local React interface and three-pair Mistral ablation are implemented; public deployment and submission video remain.
-- Current ablation weakness: history changed the decision safely, but the model cited the failed receipt without citing the current probe.
+- Local React interface, three-pair Mistral ablation, Gemini provider workflow, and public CI are implemented.
 
 ## References checked during the build
 

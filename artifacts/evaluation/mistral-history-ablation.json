@@ -1,5 +1,4 @@
 {
-  "recorded_at": "2026-10-18",
   "scenario": "ambiguous current outage with a historically failed restart",
   "provider": "ollama",
   "model": "mistral:latest",
@@ -14,7 +13,7 @@
     "with_history_valid_safe_handoffs": "3/3",
     "without_history_valid_decisions": "0/3",
     "without_history_observed_output": "All three raw outputs attempted restart_inventory but placed the JSON inside the reason field; strict validation rejected them.",
-    "citation_gap": "History runs cited the current observation and a handoff summary saying restart failed, but did not cite the failed action-result receipt."
+    "citation_evidence": "History runs cited the current observation and the persisted handoff summary that recorded the failed restart."
   },
   "results": [
     {

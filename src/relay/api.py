@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from redis.exceptions import RedisError
 
 from relay.memory import Conflict, Memory, NotFound
+from relay.models import gemini_status
 from relay.recall import retrieve
 from relay.runner import Runner
 
@@ -32,7 +33,7 @@ def web_origins() -> list[str]:
 app = FastAPI(
     title="Relay memory API",
     version="0.1.0",
-    description="Local developer API. Tenant routing is not authentication.",
+    description="FalkorDB-backed incident memory and agent coordination API.",
 )
 
 app.add_middleware(
@@ -168,10 +169,12 @@ def providers():
         available = any(m.get("name") == local_model for m in response.json().get("models", []))
     except (httpx.HTTPError, ValueError):
         pass
+    gemini = gemini_status()
     return {
         "policy": True,
         "ollama": available,
-        "gemini": bool(os.getenv("GEMINI_API_KEY") and os.getenv("RELAY_GEMINI_MODEL")),
+        "gemini": gemini["available"],
+        "gemini_status": gemini,
         "local_model": local_model,
     }
 

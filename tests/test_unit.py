@@ -4,7 +4,7 @@ import httpx
 import pytest
 
 from relay.config import sandbox_case, tenant_graph
-from relay.models import decide
+from relay.models import ProviderError, _gemini_decision, decide, gemini_status
 
 
 def test_tenant_names_are_unambiguous_and_namespaces_separate():
@@ -80,5 +80,108 @@ def test_model_prompt_contains_copyable_evidence_catalog(monkeypatch):
 
 def test_gemini_requires_explicit_configuration(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-    with pytest.raises(ValueError, match="GEMINI_API_KEY"):
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+    with pytest.raises(ProviderError, match="GEMINI_API_KEY"):
         decide({"episodes": []}, "gemini")
+
+
+def test_gemini_structured_decision_is_validated():
+    decision = _gemini_decision(
+        {
+            "candidates": [
+                {
+                    "content": {
+                        "parts": [
+                            {
+                                "text": json.dumps(
+                                    {
+                                        "tool": "handoff",
+                                        "reason": "Need another observation",
+                                        "evidence_ids": ["ep1"],
+                                    }
+                                )
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    )
+    assert decision.tool == "handoff"
+
+
+@pytest.mark.parametrize(
+    "payload, message",
+    [
+        ({"promptFeedback": {"blockReason": "SAFETY"}}, "blocked"),
+        ({"candidates": []}, "no decision"),
+        ({"candidates": [{"finishReason": "MAX_TOKENS", "content": {"parts": []}}]}, "empty"),
+    ],
+)
+def test_gemini_empty_and_blocked_responses_are_typed(payload, message):
+    with pytest.raises(ProviderError, match=message):
+        _gemini_decision(payload)
+
+
+def test_gemini_readiness_probe(monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setenv("RELAY_GEMINI_MODEL", "gemini-test")
+
+    def response(_url, **_kwargs):
+        return httpx.Response(200, request=httpx.Request("GET", "https://example.test"), json={})
+
+    monkeypatch.setattr(httpx, "get", response)
+    assert gemini_status() == {
+        "configured": True,
+        "available": True,
+        "model": "gemini-test",
+    }
+
+
+def test_gemini_decide_sends_schema_and_returns_usage(monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setenv("RELAY_GEMINI_MODEL", "gemini-test")
+    seen = {}
+
+    def response(_self, url, **kwargs):
+        seen["url"] = url
+        seen["request"] = kwargs["json"]
+        return httpx.Response(
+            200,
+            request=httpx.Request("POST", url),
+            json={
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {
+                                    "text": json.dumps(
+                                        {
+                                            "tool": "handoff",
+                                            "reason": "Preserve the case",
+                                            "evidence_ids": ["ep1"],
+                                        }
+                                    )
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "usageMetadata": {"promptTokenCount": 10, "candidatesTokenCount": 5},
+            },
+        )
+
+    monkeypatch.setattr(httpx.Client, "post", response)
+    decision, metadata = decide(
+        {
+            "episodes": [{"id": "ep1", "kind": "observation", "content": "Down"}],
+            "failed_actions": [],
+            "procedures": [],
+        },
+        "gemini",
+    )
+    assert decision.tool == "handoff"
+    assert metadata["provider"] == "gemini"
+    assert metadata["usage"]["promptTokenCount"] == 10
+    assert seen["url"].endswith("/gemini-test:generateContent")
+    assert seen["request"]["generationConfig"]["responseJsonSchema"]["title"] == "Decision"

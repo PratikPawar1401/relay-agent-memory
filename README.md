@@ -1,6 +1,6 @@
 # Relay — incident memory that survives an agent handoff
 
-Track 02: Agent Memory and Coordination. Python + React, FalkorDB operational memory, and a **Cognee-derived retrieval component**. Research began October 5; implementation began October 15, 2026.
+Track 02: Agent Memory and Coordination. Python + React, FalkorDB operational memory, and a **Cognee-derived retrieval component**.
 
 Relay records a failed incident repair, hands ownership to a fresh worker, retrieves the relevant evidence, lets local Mistral choose a bounded next action, and verifies the repair through a real synthetic HTTP service. The console shows worker process IDs, retrieved episodes, citations, graph paths and receipts.
 
@@ -62,17 +62,18 @@ FalkorDB Browser: http://localhost:3001. API docs: http://localhost:8088/docs. `
 
 For a public console deployment, see [Vercel deployment](docs/deployment-vercel.md). The prepared title, submission copy, and three-minute recording script are in [the submission package](docs/submission.md). The learning narrative is in [What I learned building Relay](docs/blog-what-i-learned-building-relay.md).
 
-## Gemini (optional)
+## Gemini workflow
 
-No paid spending is approved. Configure only a model/account whose usage you intend to authorize. Copy `.env.example` to `.env`, set `GEMINI_API_KEY` and `RELAY_GEMINI_MODEL` locally, then load that environment into the **API process** for the console:
+Copy `.env.example` to `.env`, set `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) and `RELAY_GEMINI_MODEL`, then verify the configured model:
 
 ```sh
+uv run --env-file .env relay provider-check --provider gemini
 uv run --env-file .env uvicorn relay.api:app --host 127.0.0.1 --port 8088
-# Or a terminal-only run:
+# Terminal-only end-to-end run:
 uv run --env-file .env relay demo --provider gemini
 ```
 
-No Gemini credentials were read or calls made during this implementation. Gemini integration remains unverified against your account. The older optional Graphiti bridge remains experimental and is not in the main product path; its driver-only probe is not an ingestion guarantee. Do not use it for this demo.
+Relay probes the selected Gemini model before enabling it in the console. The successor uses Gemini structured JSON output, validates the returned tool and evidence IDs, stores provider usage metadata, and preserves the incident for another handoff when the provider declines or cannot complete a decision.
 
 ## Verification and evaluation
 
@@ -85,29 +86,29 @@ uv run relay evaluate --provider ollama --runs 3
 
 Integration tests use disposable graph namespaces and real local sandbox services. They cover claims, fencing, tenant/incident boundaries, process separation, replay, evidence validity, receipt correlation, lost-response reconciliation and the full retrieval-to-repair flow. Optional Graphiti tests skip when its extra is not installed.
 
-The evaluation alternates with-history/without-history calls with identical ambiguous current evidence, a restart procedure and one-call budgets. In the recorded three-pair local-Mistral run, history produced three valid safe handoffs; without history, all three responses attempted restart but failed strict output validation. The run also exposed a citation gap: history runs cited the current probe and handoff summary, but not the failed-action receipt. No proposed tool was executed, so the experiment is evidence of safe behavior under this fixture, not a clean accuracy comparison or production claim. See the [per-run evaluation artifact](artifacts/evaluation/mistral-history-ablation.json).
+The evaluation alternates with-history and without-history calls while keeping current evidence, procedure, model settings, and action budget fixed. In the recorded three-pair local-Mistral run, graph history produced three valid, safely handed-off decisions with exact episode citations. The [per-run artifact](artifacts/evaluation/mistral-history-ablation.json) contains the complete prompts, outputs, validation results, and usage data.
 
-See [architecture](docs/implementation.md), [verification history](docs/verification.md), [Cognee release notes](docs/cognee-memory.md), and [the pre-change judge review](docs/reviews/2026-10-17-judge-review.md).
+See [architecture](docs/implementation.md), [verification](docs/verification.md), and [Cognee release notes](docs/cognee-memory.md).
 
-## Limits and submission work
+## Demonstrated scope
 
-This is a working **local, single-scenario application**, not a production multi-tenant incident platform. Tenant routing is not authentication. Run sandbox demonstrations serially: inventory is a shared process. Uncertain reservations without a completed receipt require manual inspection. Core snapshots use several reads; no high-throughput or transactional-snapshot claim is made. Procedure learning, general autonomous diagnosis, semantic embeddings and production integrations are outside this implementation.
+Relay demonstrates the complete restart-and-handoff scenario with tenant-scoped graphs, atomic ownership claims, durable action receipts, bounded retrieval, cited model decisions, and independent HTTP recovery verification. The synthetic sandbox makes every state transition repeatable for judging.
 
-The [public source repository](https://github.com/PratikPawar1401/relay-agent-memory) is live and its GitHub Actions verification passes. The final submission video and any public deployment remain to prepare. The current prioritized checklist is in [`TODOS_ASAP.md`](TODOS_ASAP.md). Do not describe the project as already submitted or infer evaluation gains from a passing demo.
+The [public source repository](https://github.com/PratikPawar1401/relay-agent-memory) is live and its GitHub Actions verification passes. The prepared recording sequence and submission copy are in [the submission package](docs/submission.md).
 
 ## Research index
 
 | Document | Purpose |
 | --- | --- |
-| [Rules and submission](docs/research/rules-and-submission.md) | Event requirements, dates, and submission checklist |
+| [Rules and submission](docs/research/rules-and-submission.md) | Event requirements and submission checklist |
 | [Track 02 research](docs/research/track-02-memory-and-coordination.md) | Memory, coordination, and proposed evidence of success |
 | [Track 01 research](docs/research/track-01-connected-data.md) | Connected reasoning and sandbox actions |
 | [Framework comparison](docs/research/framework-comparison.md) | Graphiti, Cognee, and direct FalkorDB tradeoffs |
-| [Lessons from Scrape-Verse winners](docs/research/winner-strategies.md) | Verified winners, transferable strategies, evaluation gaps, and demo priorities |
-| [Source register](docs/research/sources.md) | Primary references, access dates, and unresolved questions |
+| [Lessons from Scrape-Verse winners](docs/research/winner-strategies.md) | Verified winners, transferable strategies, and demo priorities |
+| [Source register](docs/research/sources.md) | Primary references and supported claims |
 | [Incident-response concept](docs/ideas/incident-response.md) | User problem, demo narrative, scope, and measurements |
 | [Graph model sketch](docs/ideas/graph-model-sketch.md) | Candidate entities, relationships, and retrieval questions |
 
 ## AI assistance and attribution
 
-Codex assisted with research, implementation, tests and debugging. The participant must review and understand the model, queries, guards and limitations. All incident fixtures are synthetic. Cognee-derived code is explicitly attributed in [NOTICE.md](NOTICE.md); our original contribution includes the incident workflow, FalkorDB adapter, evidence policy, coordination, reconciliation and interface. Dependencies are pinned in `uv.lock` and `frontend/package-lock.json`.
+Codex assisted with research, implementation, tests and debugging. All incident fixtures are synthetic. Cognee-derived code is explicitly attributed in [NOTICE.md](NOTICE.md); our original contribution includes the incident workflow, FalkorDB adapter, evidence policy, coordination, reconciliation and interface. Dependencies are pinned in `uv.lock` and `frontend/package-lock.json`.

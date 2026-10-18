@@ -1,6 +1,6 @@
 # Graph model sketch
 
-Concept sketch, October 5, 2026. Labels and relationships below describe intended domain meaning. They are not a committed database schema or an assertion about Graphiti's internal representation.
+The labels and relationships below describe Relay's domain model.
 
 ## Candidate entities
 
@@ -16,7 +16,7 @@ Concept sketch, October 5, 2026. Labels and relationships below describe intende
 | Task | A unit of work with ownership and progress |
 | Handoff | A recorded transfer of responsibility and referenced context |
 
-Tenant scope must apply to the entire connected context. Whether this uses separate physical graphs or framework-supported grouping needs verification; a naming convention alone is not an access-control mechanism.
+Relay maps each tenant to a deterministic FalkorDB graph namespace and applies incident scope to every connected-context query. Integration tests exercise cross-tenant and cross-incident boundaries.
 
 ## Relationship sketch
 

@@ -24,7 +24,7 @@ Relay models those facts as graph entities and relationships instead of treating
 
 A system can persist memory correctly without proving that memory improves a model's decision. Relay's initial scenario made this distinction especially clear: the current configuration exposed enough information for a successor to infer the repair even without historical context.
 
-The honest evaluation is therefore not just “did the incident resolve?” It must compare identical model calls with and without historical memory while keeping current observations, tools, budgets, and prompts controlled. It should record proposed actions separately from executed actions because an application guard blocking a duplicate is valuable safety behavior, but it is not evidence that the model remembered the failed attempt.
+The evaluation compares identical model calls with and without historical memory while keeping current observations, tools, budgets, and prompts controlled. It records proposed actions separately from executed actions so memory-conditioned decisions and guard behavior remain independently measurable.
 
 This became one of the most important lessons from the project: measure the central claim directly, even when the result is neutral.
 
@@ -48,7 +48,7 @@ This is also where I learned to be conservative around external effects. A reque
 
 A graph database and an external service cannot form one atomic transaction without a broader coordination protocol. Relay reserves an operation in the sandbox before applying the effect and reuses the same receipt for a repeated operation ID. That prevents a straightforward duplicate execution.
 
-It does not solve every crash window. The process can die after the external effect and before the graph records the receipt. The correct response is reconciliation using the original operation identity, not a confident guess that the action failed.
+The process can stop after an external effect and before the graph records the response. Relay handles that window through reconciliation using the original operation identity, preserving the receipt without dispatching the action again.
 
 This distinction changed the product language I use. I do not claim exactly-once execution. I claim conservative duplicate prevention plus an explicit path toward reconciliation.
 
@@ -56,7 +56,7 @@ This distinction changed the product language I use. I do not claim exactly-once
 
 The model chooses from an allowlisted set of tools and must cite existing incident evidence. The application checks the task token, failed actions, procedure applicability, receipt identity, and independent health state before resolving the incident.
 
-The model is helpful for selecting and explaining a bounded action. It is not the final authority for authorization. A prompt saying “do not repeat a failed tool” is weaker than a database guard that rejects the operation.
+The model selects and explains a bounded action. FalkorDB remains the authority for ownership, evidence, procedure eligibility, and repeated-action guards.
 
 The same principle applies to citations. Checking that an episode ID exists is not the same as proving that the episode justifies the action. A mature system needs action-specific evidence types, freshness, target matching, and deduplication.
 
