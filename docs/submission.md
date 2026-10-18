@@ -25,6 +25,8 @@ Before publication:
 - [ ] Confirm GitHub Actions passes from the public repository.
 - [ ] Replace local-only status text in the README with the repository and demo URLs.
 
+Local publication preparation is complete: branch `main`, clean staged file set, pinned CI actions, and a successful isolated-clone install/test/build. The first implementation commit is `d48171c`.
+
 ## Three-minute recording
 
 1. **0:00–0:20 — Problem.** Checkout is unavailable. Explain that the first worker can disappear with context trapped in its prompt.

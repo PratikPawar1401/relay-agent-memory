@@ -15,6 +15,7 @@ This is the working backlog for the next session. Keep the project narrow: durab
 - [x] Cognee-derived retrieval is attributed, incident-scoped, size-bounded, persisted, and linked to source episodes with `CITES` edges.
 - [x] A three-pair local-Mistral history ablation is stored at `artifacts/evaluation/mistral-history-ablation.json`; no proposed action was executed.
 - [x] Final local checks: 36 tests, Ruff, and the React production build pass.
+- [x] A local Git repository on `main`, pinned GitHub Actions workflow, and isolated clean-clone verification are ready for publication.
 
 Still blocking a public submission: public repository and deployment URLs, API authentication/rate limits, a resettable public tenant, and the final recording. These require external hosting/account choices. The evaluation also found that history-enabled answers cited the failed receipt but omitted the current probe.
 
