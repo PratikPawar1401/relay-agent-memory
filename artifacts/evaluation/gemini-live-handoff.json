@@ -1,0 +1,50 @@
+{
+  "scenario": "synthetic checkout incident handoff",
+  "provider": "gemini",
+  "model": "gemini-3.8-flash",
+  "tenant": "demo-e3a5d6ead01d",
+  "incident": "4823443e9ee6455bac9c4d96aaf7e69c",
+  "worker_separation": {
+    "investigator_pid": 7988,
+    "successor_pid": 8027,
+    "separate_processes": true
+  },
+  "retrieval": {
+    "episode_id": "f984e20b5e5245dfbeca5a9b2a9d081a",
+    "component": "Cognee-derived rank fusion over FalkorDB graph memory"
+  },
+  "decision": {
+    "episode_id": "f13babb25d224b25a2343d71ab47afcc",
+    "tool": "restore_inventory_route",
+    "reason": "Restarting inventory failed, and inspection confirmed that the inventory route differs from /stock, satisfying the precondition to restore the inventory route.",
+    "evidence": [
+      {
+        "id": "06e8e299952a4e1cb7915acd25e5daa0",
+        "kind": "action_result",
+        "content": "Action did not restore service health"
+      },
+      {
+        "id": "5be0836b268d46029220f5d4a054ca83",
+        "kind": "configuration",
+        "content": "Inventory route inspected"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1661,
+      "thought_tokens": 800,
+      "candidate_tokens": 102,
+      "total_tokens": 2563
+    }
+  },
+  "action": {
+    "id": "f005359761c848b284e134870c67580b",
+    "tool": "restore_inventory_route",
+    "status": "succeeded"
+  },
+  "verification": {
+    "episode_id": "f7ed3a74b54d42d4a8ddd74b66f4c7ae",
+    "content": "Independent checkout HTTP probe passed",
+    "incident_status": "resolved",
+    "task_status": "done"
+  }
+}

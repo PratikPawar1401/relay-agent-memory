@@ -24,7 +24,9 @@ The suite covers tenant and incident boundaries, competing claims, fencing token
 - The browser console completed all four stages and displayed the new worker identity, retrieved context, graph paths, citations, action receipt, and recovery proof.
 - A clean clone installed from the committed lockfiles and passed integration tests, lint, and the frontend production build.
 - Gemini contract tests cover structured output validation, blocked responses, empty candidates, configuration, and model readiness probing.
+- A live Gemini successor ran in a separate process, cited the failed-action receipt and current configuration, selected the eligible repair, produced a successful action receipt, and reached `resolved` after the independent HTTP probe.
 
 ## Evaluation artifact
 
-[`artifacts/evaluation/mistral-history-ablation.json`](../artifacts/evaluation/mistral-history-ablation.json) contains the complete paired outputs and measured provider metadata.
+- [`mistral-history-ablation.json`](../artifacts/evaluation/mistral-history-ablation.json) contains the complete paired outputs and measured provider metadata.
+- [`gemini-live-handoff.json`](../artifacts/evaluation/gemini-live-handoff.json) contains the live Gemini decision, exact citations, worker separation, token usage, action receipt, and recovery result.

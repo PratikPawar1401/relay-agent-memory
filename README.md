@@ -73,7 +73,7 @@ uv run --env-file .env uvicorn relay.api:app --host 127.0.0.1 --port 8088
 uv run --env-file .env relay demo --provider gemini
 ```
 
-Relay probes the selected Gemini model before enabling it in the console. The successor uses Gemini structured JSON output, validates the returned tool and evidence IDs, stores provider usage metadata, and preserves the incident for another handoff when the provider declines or cannot complete a decision.
+Relay probes the selected Gemini model before enabling it in the console. The successor uses Gemini structured JSON output, validates the returned tool and evidence IDs, and stores provider usage metadata. In the recorded live run, Gemini cited both the failed restart receipt and current configuration, selected `restore_inventory_route`, and reached `resolved` after the independent checkout probe. See the [Gemini run artifact](artifacts/evaluation/gemini-live-handoff.json).
 
 ## Verification and evaluation
 
@@ -86,7 +86,7 @@ uv run relay evaluate --provider ollama --runs 3
 
 Integration tests use disposable graph namespaces and real local sandbox services. They cover claims, fencing, tenant/incident boundaries, process separation, replay, evidence validity, receipt correlation, lost-response reconciliation and the full retrieval-to-repair flow. Optional Graphiti tests skip when its extra is not installed.
 
-The evaluation alternates with-history and without-history calls while keeping current evidence, procedure, model settings, and action budget fixed. In the recorded three-pair local-Mistral run, graph history produced three valid, safely handed-off decisions with exact episode citations. The [per-run artifact](artifacts/evaluation/mistral-history-ablation.json) contains the complete prompts, outputs, validation results, and usage data.
+The evaluation alternates with-history and without-history calls while keeping current evidence, procedure, model settings, and action budget fixed. In the recorded three-pair local-Mistral run, graph history produced three valid, safely handed-off decisions with exact episode citations. The [paired Mistral artifact](artifacts/evaluation/mistral-history-ablation.json) contains the complete prompts, outputs, validation results, and usage data; the [live Gemini artifact](artifacts/evaluation/gemini-live-handoff.json) records a cited end-to-end recovery.
 
 See [architecture](docs/implementation.md), [verification](docs/verification.md), and [Cognee release notes](docs/cognee-memory.md).
 

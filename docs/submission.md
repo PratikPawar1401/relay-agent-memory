@@ -24,7 +24,7 @@ The public repository is [PratikPawar1401/relay-agent-memory](https://github.com
 1. **0:00–0:20 — Problem.** Checkout is unavailable. Explain that the first worker can disappear with context trapped in its prompt.
 2. **0:20–0:50 — Agent A.** Run the controlled first shift. Show the failed restart receipt and the worker PID/run ID.
 3. **0:50–1:10 — Guard.** Attempt the recorded unsafe repeat. Show FalkorDB rejecting it before an external tool call.
-4. **1:10–1:55 — Fresh successor.** Launch local Mistral. Show a different PID, the selected episodes, context hash, dependency path, and procedure.
+4. **1:10–1:55 — Fresh successor.** Launch Gemini or local Mistral. Show a different PID, the selected episodes, context hash, dependency path, and procedure.
 5. **1:55–2:25 — Recovery.** Show the cited decision, route restoration receipt, and independent checkout health probe.
 6. **2:25–2:45 — Graph proof.** Show the temporal hypothesis history and the source-to-decision evidence links.
 7. **2:45–3:00 — Evidence.** Show the passing checks, paired evaluation artifact, synthetic-data disclosure, AI-assistance disclosure, and public source.
@@ -48,6 +48,8 @@ FalkorDB is the authoritative memory and coordination layer. Conditional Cypher 
 ### Demonstrated scope
 
 Relay demonstrates durable episodic, semantic, and procedural memory, cross-process handoff, guarded actions, durable receipts, and independently verified recovery through a repeatable synthetic checkout incident.
+
+The recorded Gemini run supplies direct provider evidence: the successor cited the failed restart result and current configuration, selected the graph-eligible repair, and resolved the incident after an independent probe.
 
 ### Disclosures
 
