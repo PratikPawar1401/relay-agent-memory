@@ -17,15 +17,16 @@ Suggested description:
 
 Suggested topics: `falkordb`, `agent-memory`, `multi-agent`, `knowledge-graph`, `incident-response`, `cognee`, `fastapi`, `react`, `hackathon`.
 
-Before publication:
+Publication status:
 
 - [ ] Select a license for Relay's original code. Cognee-derived files retain their Apache-2.0 license and notices regardless of this choice.
-- [ ] Create the public repository and push the prepared history.
-- [ ] Verify the repository while signed out.
-- [ ] Confirm GitHub Actions passes from the public repository.
-- [ ] Replace local-only status text in the README with the repository and demo URLs.
+- [x] Create the public repository and push the prepared history.
+- [x] Verify that GitHub labels the repository public and exposes its code page.
+- [x] Confirm GitHub Actions passes from the public repository.
+- [x] Replace the local-only repository status in the README with the public URL.
+- [ ] Add the demo and deployment URLs after those artifacts exist.
 
-Local publication preparation is complete: branch `main`, clean staged file set, pinned CI actions, and a successful isolated-clone install/test/build. The first implementation commit is `d48171c`.
+The public repository is [PratikPawar1401/relay-agent-memory](https://github.com/PratikPawar1401/relay-agent-memory). Branch `main` has pinned CI actions and passed the public install, integration-test, lint, and frontend-build workflow. The first implementation commit is `d48171c`.
 
 ## Three-minute recording
 
@@ -63,7 +64,7 @@ All incident data is synthetic. Codex assisted with research, implementation, te
 
 ## URLs to fill after release
 
-- Public source: `TBD`
+- Public source: https://github.com/PratikPawar1401/relay-agent-memory
 - Frontend: `TBD`
 - Backend health: `TBD`
 - Demo video: `TBD`

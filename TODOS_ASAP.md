@@ -16,8 +16,9 @@ This is the working backlog for the next session. Keep the project narrow: durab
 - [x] A three-pair local-Mistral history ablation is stored at `artifacts/evaluation/mistral-history-ablation.json`; no proposed action was executed.
 - [x] Final local checks: 36 tests, Ruff, and the React production build pass.
 - [x] A local Git repository on `main`, pinned GitHub Actions workflow, and isolated clean-clone verification are ready for publication.
+- [x] The public repository is live at https://github.com/PratikPawar1401/relay-agent-memory and its GitHub Actions verification passes.
 
-Still blocking a public submission: public repository and deployment URLs, API authentication/rate limits, a resettable public tenant, and the final recording. These require external hosting/account choices. The evaluation also found that history-enabled answers cited the failed receipt but omitted the current probe.
+Still blocking the final submission package: the recording. A public deployment would also need API authentication/rate limits, a resettable public tenant, and frontend/backend URLs; those require external hosting/account choices. The evaluation also found that history-enabled answers cited the failed receipt but omitted the current probe.
 
 ## Current Deployment Shape
 
@@ -481,7 +482,7 @@ The winning Track 02 claim should be: **Relay turns heterogeneous incident evide
 
 ## Submission Checklist
 
-- [ ] Public source repository URL works signed out.
+- [x] Public source repository is visibly marked public and its CI passes.
 - [ ] Vercel production URL works.
 - [ ] Backend HTTPS URL works.
 - [ ] Clean-browser deterministic demo works.

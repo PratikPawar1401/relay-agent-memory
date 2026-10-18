@@ -93,7 +93,7 @@ See [architecture](docs/implementation.md), [verification history](docs/verifica
 
 This is a working **local, single-scenario application**, not a production multi-tenant incident platform. Tenant routing is not authentication. Run sandbox demonstrations serially: inventory is a shared process. Uncertain reservations without a completed receipt require manual inspection. Core snapshots use several reads; no high-throughput or transactional-snapshot claim is made. Procedure learning, general autonomous diagnosis, semantic embeddings and production integrations are outside this implementation.
 
-The public repository, final submission video and any deployment are separate submission artifacts still to prepare. The current prioritized checklist is in [`TODOS_ASAP.md`](TODOS_ASAP.md). Do not describe the project as already submitted or infer evaluation gains from a passing demo.
+The [public source repository](https://github.com/PratikPawar1401/relay-agent-memory) is live and its GitHub Actions verification passes. The final submission video and any public deployment remain to prepare. The current prioritized checklist is in [`TODOS_ASAP.md`](TODOS_ASAP.md). Do not describe the project as already submitted or infer evaluation gains from a passing demo.
 
 ## Research index
 

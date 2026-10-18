@@ -16,13 +16,13 @@ Verified October 5, 2026 against the [official rules](https://www.wemakedevs.org
 
 ## Submission checklist
 
-- [ ] Public source repository.
-- [ ] README with setup and graph model.
-- [ ] Essential Cypher queries or graph algorithms.
+- [x] Public source repository.
+- [x] README with setup and graph model.
+- [x] Essential Cypher queries or graph algorithms.
 - [ ] Working demo video.
-- [ ] Live deployment or complete local setup.
-- [ ] Entered tracks identified.
+- [x] Live deployment or complete local setup.
+- [x] Entered tracks identified.
 
 ## Current build status — October 18
 
-The research-only boundary ended when the event opened. Relay now has a working local FalkorDB application, synthetic incident sandbox, React console, separate worker processes, Cognee-derived retrieval, model/policy modes, and automated verification. Public source publication and the demo video remain submission blockers. Current release status lives in [`TODOS_ASAP.md`](../../TODOS_ASAP.md) and [`docs/submission.md`](../submission.md); the dated research above remains as the original rules record.
+The research-only boundary ended when the event opened. Relay now has a working local FalkorDB application, synthetic incident sandbox, React console, separate worker processes, Cognee-derived retrieval, model/policy modes, automated verification, and a [public source repository](https://github.com/PratikPawar1401/relay-agent-memory) with passing GitHub Actions. The demo video remains a submission blocker; a public deployment is optional because the complete local setup is documented. Current release status lives in [`TODOS_ASAP.md`](../../TODOS_ASAP.md) and [`docs/submission.md`](../submission.md); the dated research above remains as the original rules record.
