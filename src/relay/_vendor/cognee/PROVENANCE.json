@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/topoteretes/cognee",
+  "revision": "37f788bd287750e10d7610173e5332b3843f6ebd",
+  "files": [
+    {
+      "path": "cognee/modules/retrieval/hybrid/ranking.py",
+      "url": "https://github.com/topoteretes/cognee/blob/37f788bd287750e10d7610173e5332b3843f6ebd/cognee/modules/retrieval/hybrid/ranking.py",
+      "sha256": "8323a69ac772c49099444de7cf943171bda8397c7fdebf05a920163f825f2700"
+    },
+    {
+      "path": "cognee/modules/retrieval/utils/brute_force_triplet_search.py",
+      "url": "https://github.com/topoteretes/cognee/blob/37f788bd287750e10d7610173e5332b3843f6ebd/cognee/modules/retrieval/utils/brute_force_triplet_search.py",
+      "sha256": "cd7b92eded8561c06a59f436a5afc42558167275b104f363184f2b73bfa157e6"
+    }
+  ],
+  "adaptation": "Hybrid rank fusion/importance weighting and format_triplets only. Relay supplies lexical/graph lanes, incident scoping, safety pins, context budget and lifecycle. No full Cognee runtime or semantic embeddings."
+}

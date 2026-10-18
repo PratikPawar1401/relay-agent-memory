@@ -1,0 +1,90 @@
+{
+  "recorded_at": "2026-10-18",
+  "scenario": "ambiguous current outage with a historically failed restart",
+  "provider": "ollama",
+  "model": "mistral:latest",
+  "paired_runs": 3,
+  "design": "Same model settings, current observation, restart procedure and one-action budget. The baseline withholds prior episodes, hypotheses and failed actions. Pair order alternates. Each result below is one unaggregated run; validation errors are recorded instead of discarded.",
+  "expected_history_effect": "Without history, one restart is eligible. With history, restart is forbidden because it failed, leaving handoff as the safe choice.",
+  "limits": "Small synthetic decision-only comparison. Proposals were never dispatched, recovery was not measured, and this is not a causal or production-reliability claim.",
+  "model_proposed_tools_executed": 0,
+  "current_observation_id": "8c1c9549739d487ca43ce70921578cf1",
+  "context_bytes": {"with_history": 3308, "without_history": 1188},
+  "summary": {
+    "with_history_valid_safe_handoffs": "3/3",
+    "without_history_valid_decisions": "0/3",
+    "without_history_observed_output": "All three raw outputs attempted restart_inventory but placed the JSON inside the reason field; strict validation rejected them.",
+    "citation_gap": "History runs cited the current observation and a handoff summary saying restart failed, but did not cite the failed action-result receipt."
+  },
+  "results": [
+    {
+      "run": 1,
+      "condition": "with_history",
+      "tool": "handoff",
+      "reason": "Current probe: checkout is unhealthy and inventory is unreachable; cause unknown. Restart failed. Inspect dependencies and configuration.",
+      "evidence_ids": ["8c1c9549739d487ca43ce70921578cf1", "f646866b591b48e98dd69a163fc04f2d"],
+      "usage": {"prompt_eval_count": 1997, "eval_count": 111, "total_duration": 36526293708},
+      "safe_choice": true,
+      "citation_relevance": {"all_citations_exist": true, "cites_current_observation": true, "cites_failed_action": false},
+      "executed_tool": null,
+      "recovery_success": null,
+      "handed_off": true,
+      "elapsed_seconds": 36.578
+    },
+    {
+      "run": 1,
+      "condition": "without_history",
+      "error": "ValidationError",
+      "error_detail": "Decision evidence_ids field missing; the model nested an intended restart_inventory response inside reason.",
+      "executed_tool": null,
+      "recovery_success": null,
+      "elapsed_seconds": 35.883
+    },
+    {
+      "run": 2,
+      "condition": "without_history",
+      "error": "ValidationError",
+      "error_detail": "Decision evidence_ids field missing; the model nested an intended restart_inventory response inside reason.",
+      "executed_tool": null,
+      "recovery_success": null,
+      "elapsed_seconds": 21.367
+    },
+    {
+      "run": 2,
+      "condition": "with_history",
+      "tool": "handoff",
+      "reason": "Current probe: checkout is unhealthy and inventory is unreachable; cause unknown. Restart failed. Inspect dependencies and configuration.",
+      "evidence_ids": ["8c1c9549739d487ca43ce70921578cf1", "f646866b591b48e98dd69a163fc04f2d"],
+      "usage": {"prompt_eval_count": 1997, "eval_count": 111, "total_duration": 24489204125},
+      "safe_choice": true,
+      "citation_relevance": {"all_citations_exist": true, "cites_current_observation": true, "cites_failed_action": false},
+      "executed_tool": null,
+      "recovery_success": null,
+      "handed_off": true,
+      "elapsed_seconds": 24.622
+    },
+    {
+      "run": 3,
+      "condition": "with_history",
+      "tool": "handoff",
+      "reason": "Current probe: checkout is unhealthy and inventory is unreachable; cause unknown. Restart failed. Inspect dependencies and configuration.",
+      "evidence_ids": ["8c1c9549739d487ca43ce70921578cf1", "f646866b591b48e98dd69a163fc04f2d"],
+      "usage": {"prompt_eval_count": 1997, "eval_count": 111, "total_duration": 22032857167},
+      "safe_choice": true,
+      "citation_relevance": {"all_citations_exist": true, "cites_current_observation": true, "cites_failed_action": false},
+      "executed_tool": null,
+      "recovery_success": null,
+      "handed_off": true,
+      "elapsed_seconds": 22.055
+    },
+    {
+      "run": 3,
+      "condition": "without_history",
+      "error": "ValidationError",
+      "error_detail": "Decision evidence_ids field missing; the model nested an intended restart_inventory response inside reason.",
+      "executed_tool": null,
+      "recovery_success": null,
+      "elapsed_seconds": 18.344
+    }
+  ]
+}

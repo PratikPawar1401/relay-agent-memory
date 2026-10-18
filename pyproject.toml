@@ -1,0 +1,39 @@
+[project]
+name = "relay-memory"
+version = "0.1.0"
+description = "Persistent incident memory and agent handoffs on FalkorDB"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "falkordb>=1.2,<2",
+  "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "pydantic>=2.11,<3",
+  "uvicorn>=0.34,<1",
+]
+
+[project.optional-dependencies]
+graphiti = ["graphiti-core[falkordb,google-genai]>=0.29,<1"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+
+[project.scripts]
+relay = "relay.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/relay"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: requires the local FalkorDB and fault sandbox"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

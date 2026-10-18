@@ -1,0 +1,42 @@
+{
+  "review_date": "2026-10-17",
+  "scope": "Real local FalkorDB. First nine probes mocked sandbox/model I/O. Graphiti probe blocked inference, embedding and reranking. Unique audit graphs were deleted afterward. Existing integration tests and the separate Mistral sample used the real synthetic sandbox.",
+  "checks": {
+    "default_pytest": "8 passed, 14 skipped",
+    "integration_pytest": "22 passed in 3.98s",
+    "ruff": "All checks passed",
+    "frontend_production_build": "Passed; Vite 8.3.4",
+    "git_status": "fatal: not a git repository"
+  },
+  "fault_probes": [
+    {"probe": "first_shift_replay", "first_http_status": 200, "replay_http_status": 409, "task_status": "claimed", "current_hypotheses": 2, "action_calls": 1},
+    {"probe": "guard_before_first_shift", "http_status": 500, "task_status": "claimed", "action_calls": 1, "action_tools": ["restart_inventory"]},
+    {"probe": "empty_configuration_permits_restore", "dispatched": true, "action_status": "succeeded"},
+    {"probe": "stored_procedure_precondition_ignored", "dispatched": true, "stored_precondition": "FORBIDDEN until manual approval"},
+    {"probe": "false_health_library_boundary", "incident_status": "resolved", "healthy_payload": false},
+    {"probe": "mismatched_receipt_library_boundary", "action_status": "succeeded", "accepted_payload": {"healthy": true, "operation": "wrong-operation", "tool": "wrong-tool"}},
+    {"probe": "irrelevant_duplicate_citations_accepted", "tool": "restore_inventory_route", "evidence_ids": ["claim-only", "claim-only"]},
+    {"probe": "resolved_incident_retains_present_tense_fault", "incident_status": "resolved", "current_beliefs": ["Inventory points to an invalid warehouse route"]},
+    {"probe": "pre_action_transport_failure_retains_claim", "task_status": "claimed"},
+    {"probe": "graphiti_first_episode_sync", "graphiti_version": "0.30.2", "error_type": "NodeNotFoundError", "llm_calls": 0, "embedding_calls": 0, "reranking_calls": 0}
+  ],
+  "live_model_sample": {
+    "mode": "One live local-model sample, not a benchmark or memory/no-memory comparison",
+    "elapsed_seconds_entire_workflow": 32.04,
+    "incident_status": "resolved",
+    "provider": "ollama",
+    "model": "mistral:latest",
+    "decision_tool": "restore_inventory_route",
+    "evidence_ids": ["9f0692219e3e4d639711f1483c67db7d"],
+    "reason": "The hypothesis 'Inventory points to an invalid warehouse route' is currently valid, and the precondition for the 'restore_inventory_route' procedure is evidenced by the episode '9f0692219e3e4d639711f1483c67db7d'.",
+    "usage": {"eval_count": 136, "prompt_eval_count": 1946, "total_duration_nanoseconds": 31237431667},
+    "actions": [{"tool": "restart_inventory", "status": "failed"}, {"tool": "restore_inventory_route", "status": "succeeded"}],
+    "current_hypotheses_after_resolution": ["Inventory points to an invalid warehouse route"]
+  },
+  "limits": [
+    "No Gemini calls or paid services used.",
+    "No fresh-checkout installation, new browser walkthrough, mobile/accessibility audit or throughput benchmark performed in this review.",
+    "Database restart persistence is documented in the earlier verification record, not repeated during this review.",
+    "Sandbox case/receipt rows created by existing integration tests and the live sample remain; user/demo graphs and running services were not deleted or stopped."
+  ]
+}
